@@ -3,6 +3,7 @@ import { createSlice } from 'redux-starter-kit';
 const initialState = {
   availableMetrics:[],
   selectedMetrics: [],
+  measurements: []
 }
 
 const slice = createSlice({
@@ -17,6 +18,9 @@ const slice = createSlice({
     },
     metricDeselected: (state, action) => {
       state.selectedMetrics = state.selectedMetrics.filter(metric => metric !== action.payload)
+    },
+    intialMeasurementsReceived: (state, action) => {
+      state.measurements = action.payload
     },
     metricApiErrorReceived: (state, action) => {
       return state

@@ -4,6 +4,7 @@ import { actions } from './reducer'
 import { Provider, createClient, useQuery } from 'urql';
 import { Container, LinearProgress } from '@material-ui/core';
 import MetricSelector from './MetricSelector'
+import MetricChart from './MetricChart'
 
 const client = createClient({
   url: 'https://react.eogresources.com/graphql',
@@ -41,6 +42,7 @@ const Dashboard = () => {
   return(
     <Container>
       <MetricSelector />
+      <MetricChart />
     </Container>
   )
 }
