@@ -1,7 +1,8 @@
 import { createSlice } from 'redux-starter-kit';
 
 const initialState = {
-  availableMetrics:[]
+  availableMetrics:[],
+  selectedMetrics: [],
 }
 
 const slice = createSlice({
@@ -10,6 +11,12 @@ const slice = createSlice({
   reducers: {
     availableMetricsReceived: (state, action) => {
       state.availableMetrics = action.payload
+    },
+    metricSelected: (state, action) => {
+      state.selectedMetrics = [...state.selectedMetrics, action.payload]
+    },
+    metricDeselected: (state, action) => {
+      state.selectedMetrics = state.selectedMetrics.filter(metric => metric !== action.payload)
     },
     metricApiErrorReceived: (state, action) => {
       return state

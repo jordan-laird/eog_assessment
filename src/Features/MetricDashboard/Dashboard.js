@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { actions } from './reducer'
 import { Provider, createClient, useQuery } from 'urql';
+import { Container, LinearProgress } from '@material-ui/core';
+import MetricSelector from './MetricSelector'
 
 const client = createClient({
   url: 'https://react.eogresources.com/graphql',
@@ -14,6 +16,7 @@ query {
 `
 const Dashboard = () => {
   const dispatch = useDispatch();
+
   const [result] = useQuery({
     query: availableMetricsQuery
   });
@@ -31,10 +34,14 @@ const Dashboard = () => {
     dispatch(actions.availableMetricsReceived(getMetrics));
   }, [dispatch, data, error]);
 
-  if (fetching) return 'fetching'
+  if (fetching) return <LinearProgress />
+
+  
 
   return(
-    <div>Placeholder</div>
+    <Container>
+      <MetricSelector />
+    </Container>
   )
 }
 
