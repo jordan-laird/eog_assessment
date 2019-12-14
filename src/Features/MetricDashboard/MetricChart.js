@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { actions } from './reducer';
 import { useQuery } from 'urql';
 import { LinearProgress } from '@material-ui/core';
-// import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend } from 'recharts';
+import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend } from 'recharts';
 
 const initialMeasurementsQuery = `
 query($input: [MeasurementQuery!]){
@@ -17,6 +17,20 @@ query($input: [MeasurementQuery!]){
   }
 }
 `;
+
+const convertTime = (timeStamp) => {
+  const timeConverted = new Date(timeStamp).toLocaleTimeString()
+  return timeConverted
+} 
+
+const metricToUnit ={
+  waterTemp: "F",
+  flareTemp: "F",
+  oilTemp: "F",
+  tubingPressure: "psi",
+  casingPressure: "psi",
+  injValveOpen: "%"
+}
 
 const convertMeasurementData = (data) => {
   const dataPoints = []
@@ -34,17 +48,20 @@ const convertMeasurementData = (data) => {
   return dataPoints
 }
 
+const timeThirtyMinutesAgo = new Date().getTime() - 18E5
+
 const MetricChart = () => {
   const dispatch = useDispatch();
-  const selectedMetrics = useSelector(state => state.metrics.selectedMetrics).map(metric =>({
+  const selectedMetrics = useSelector(state => state.metrics.selectedMetrics)
+  const selectedMetricsInput = selectedMetrics.map(metric =>({
     metricName: metric,
-    after: new Date().getTime() - 18E5
+    after: timeThirtyMinutesAgo
   }))
 
   const [result] = useQuery({
     query: initialMeasurementsQuery,
     variables:{
-      input: selectedMetrics
+      input: selectedMetricsInput
     }
   })
 
@@ -59,10 +76,24 @@ const MetricChart = () => {
     const { getMultipleMeasurements } = data;
     dispatch(actions.intialMeasurementsReceived(convertMeasurementData(getMultipleMeasurements)));
   }, [dispatch, data, error])
+
+  const graphData = useSelector(state => state.metrics.measurements)
+
+  if(fetching) return <LinearProgress />;
   
-  return(
-    <div>HERE</div>
-  )
+  if(graphData.length > 0){
+    return (
+      <LineChart width={1000} height={500} data={graphData}>
+        <XAxis dataKey="at" />
+        <YAxis />
+        {selectedMetrics.map(metric => {
+          return (<Line key={`lineChart-${metric}`} dataKey={metric} dot={false} />)
+        })}
+      </LineChart>
+    );
+  }else{
+    return(<div />)
+  }
 }
 
 export default () => {
