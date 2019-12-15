@@ -24,7 +24,7 @@ const slice = createSlice({
     },
     newMeasurementReceived: (state, action) => {
       const newMeasurement = action.payload
-      const existingObj = state.measurements.find(existing => existing.at == newMeasurement.at)
+      const existingObj = state.measurements.find(existing => existing.at === newMeasurement.at)
       if(existingObj){
         existingObj[newMeasurement.metric] = newMeasurement.value
       }
