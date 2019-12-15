@@ -23,7 +23,15 @@ const slice = createSlice({
       state.measurements = action.payload
     },
     newMeasurementReceived: (state, action) => {
-      debugger
+      const newMeasurement = action.payload
+      const existingObj = state.measurements.find(existing => existing.at == newMeasurement.at)
+      if(existingObj){
+        existingObj[newMeasurement.metric] = newMeasurement.value
+      }
+      else{
+        const obj = {at: newMeasurement.at, [newMeasurement.metric]: newMeasurement.value}
+        state.measurements.push(obj)
+      }
     },
     metricApiErrorReceived: (state, action) => {
       return state
