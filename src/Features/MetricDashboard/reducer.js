@@ -22,6 +22,9 @@ const slice = createSlice({
     intialMeasurementsReceived: (state, action) => {
       state.measurements = action.payload
     },
+    newMeasurementReceived: (state, action) => {
+      debugger
+    },
     metricApiErrorReceived: (state, action) => {
       return state
     }
