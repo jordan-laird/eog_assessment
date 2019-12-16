@@ -37,7 +37,7 @@ const MetricSelector = () => {
         <InputLabel id="metricSelect">Select Metric</InputLabel>
         <Select
           labelId="metricSelect"
-          value=""
+          value={selectedMetrics.length ? selectedMetrics : ''}
           onChange={selectMetric}
           renderValue={selected => (
             <div>
