@@ -5,33 +5,31 @@ import { Select, MenuItem, Chip, FormControl, InputLabel } from '@material-ui/co
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles({
-  metricSelector:{
+  metricSelector: {
     minWidth: 150,
     marginTop: 10,
-    marginBottom: 10
+    marginBottom: 10,
   },
-  selectedChip:{
+  selectedChip: {
     marginLeft: 2,
-    marginRight: 2
-  }
-})
-
+    marginRight: 2,
+  },
+});
 
 const MetricSelector = () => {
-  const classes = useStyles()
+  const classes = useStyles();
   const dispatch = useDispatch();
   const availableMetrics = useSelector(state => state.metrics.availableMetrics);
   const selectedMetrics = useSelector(state => state.metrics.selectedMetrics);
-  const metricsForSelectDropdown = availableMetrics.filter(metric => !selectedMetrics.includes(metric))
+  const metricsForSelectDropdown = availableMetrics.filter(metric => !selectedMetrics.includes(metric));
 
-  const selectMetric = (e) => {
+  const selectMetric = e => {
     dispatch(actions.metricSelected(e.target.value));
-  }
+  };
 
-  const deselectMetric = (value) => {
+  const deselectMetric = value => {
     dispatch(actions.metricDeselected(value));
-  }
-
+  };
 
   return (
     <div>
@@ -39,12 +37,18 @@ const MetricSelector = () => {
         <InputLabel id="metricSelect">Select Metric</InputLabel>
         <Select
           labelId="metricSelect"
-          value={selectedMetrics}
+          value=""
           onChange={selectMetric}
           renderValue={selected => (
             <div>
               {selected.map(value => (
-                <Chip className={classes.selectedChip} value={value} key={`${value}:selected`} onDelete={() => deselectMetric(value)} label={value} />
+                <Chip
+                  className={classes.selectedChip}
+                  value={value}
+                  key={`${value}:selected`}
+                  onDelete={() => deselectMetric(value)}
+                  label={value}
+                />
               ))}
             </div>
           )}
@@ -58,10 +62,8 @@ const MetricSelector = () => {
       </FormControl>
     </div>
   );
-}
+};
 
 export default () => {
-  return(
-    <MetricSelector />
-  )
-}
+  return <MetricSelector />;
+};
