@@ -87,7 +87,6 @@ const MetricChart = () => {
     dispatch(actions.intialMeasurementsReceived(convertMeasurementData(getMultipleMeasurements)));
   }, [dispatch, data, error])
 
-  const formattedGraphData = []
   const graphData = useSelector(state => state.metrics.measurements)
 
   if(fetching) return <LinearProgress />;

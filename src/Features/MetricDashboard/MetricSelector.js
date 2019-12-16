@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useQuery } from 'urql';
 import { actions } from './reducer';
 import { Select, MenuItem, Chip } from '@material-ui/core';
 
