@@ -2,7 +2,8 @@ import React from 'react';
 import { useSubscription } from 'urql';
 import { useDispatch, useSelector } from 'react-redux';
 import { actions } from './reducer';
-import { Card } from '@material-ui/core';
+import { Card, CardContent, Typography, Grid } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 
 const metricSubscription = `
 subscription {
@@ -15,8 +16,20 @@ subscription {
 }
 `;
 
+const useStyles = makeStyles({
+  card: {
+    marginTop: 10,
+    marginBottom: 10,
+    marginLeft: 5,
+    marginRight: 5,
+    maxWidth: 200,
+    textAlign: "center"
+  },
+})
+
 const MetricCards = () => {
-  const measurements = useSelector(state => state.metrics.measurements)
+  const classes = useStyles()
+  const mostRecentMeasurements = useSelector(state => state.metrics.mostRecentMeasurement)
   const selectedMetrics = useSelector(state => state.metrics.selectedMetrics)
   const dispatch = useDispatch();
   const handleSubscription = (existing ={}, newData) => {
@@ -31,15 +44,21 @@ const MetricCards = () => {
 
   const metricCard = () => {
     return selectedMetrics.map(metric => {
-        const newestMeasurement = measurements.length ? measurements[measurements.length - 1][metric] : '';
-        return(<Card>{metric + ":" + newestMeasurement}</Card>)
+        return(
+        <Grid item xs={2}>
+          <Card className={classes.card}>
+          <Typography className={classes.cardHeader} variant="h5">{metric}</Typography>
+          <Typography variant="h6">{mostRecentMeasurements[metric]}</Typography>
+          </Card>
+        </Grid>
+        )
     })
   }
 
   return(
-    <div>
+    <Grid container>
       {metricCard()}
-    </div>
+    </Grid>
   )
 }
 

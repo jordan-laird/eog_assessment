@@ -3,7 +3,8 @@ import { createSlice } from 'redux-starter-kit';
 const initialState = {
   availableMetrics:[],
   selectedMetrics: [],
-  measurements: []
+  measurements: [],
+  mostRecentMeasurement: {}
 }
 
 const slice = createSlice({
@@ -25,6 +26,7 @@ const slice = createSlice({
     newMeasurementReceived: (state, action) => {
       const newMeasurement = action.payload
       const existingObj = state.measurements.find(existing => existing.at === newMeasurement.at)
+      state.mostRecentMeasurement[newMeasurement.metric] = newMeasurement.value
       if(existingObj){
         existingObj[newMeasurement.metric] = newMeasurement.value
       }
