@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { actions } from './reducer';
 import { useQuery } from 'urql';
 import { LinearProgress } from '@material-ui/core';
-import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, Tooltip, Legend, Label } from 'recharts';
 
 const initialMeasurementsQuery = `
 query($input: [MeasurementQuery!]){
@@ -23,14 +23,24 @@ const convertTime = (timeStamp) => {
   return timeConverted
 } 
 
-const metricToUnit ={
-  waterTemp: "F",
-  flareTemp: "F",
-  oilTemp: "F",
-  tubingPressure: "psi",
-  casingPressure: "psi",
-  injValveOpen: "%"
-}
+const metricToUnit = {
+  waterTemp: 'temperature',
+  flareTemp: 'temperature',
+  oilTemp: 'temperature',
+  tubingPressure: 'pressure',
+  casingPressure: 'pressure',
+  injValveOpen: 'percentage'
+};
+const metricToColor = {
+  waterTemp: '#4263f5',
+  flareTemp: '#f54242',
+  oilTemp: '#f54242',
+  tubingPressure: '#139c20',
+  casingPressure: '#5a139c',
+  injValveOpen: '#ffa200'
+};
+const temperature = ['flareTemp', 'waterTemp', 'oilTemp'];
+const pressure = ['tubingPressure', 'casingPressure'];
 
 const convertMeasurementData = (data) => {
   const dataPoints = []
@@ -77,6 +87,7 @@ const MetricChart = () => {
     dispatch(actions.intialMeasurementsReceived(convertMeasurementData(getMultipleMeasurements)));
   }, [dispatch, data, error])
 
+  const formattedGraphData = []
   const graphData = useSelector(state => state.metrics.measurements)
 
   if(fetching) return <LinearProgress />;
@@ -84,11 +95,33 @@ const MetricChart = () => {
   if(graphData.length > 0){
     return (
       <LineChart width={1000} height={500} data={graphData}>
-        <XAxis dataKey="at" />
-        <YAxis />
-        {selectedMetrics.map(metric => {
-          return (<Line key={`lineChart-${metric}`} dataKey={metric} dot={false} />)
-        })}
+        <XAxis dataKey={'at'} tickFormatter={convertTime} interval={300} />
+        {selectedMetrics.some(metric => temperature.includes(metric)) ? (
+          <YAxis yAxisId={'temperature'} datakey={'temperature'}>
+            <Label value={'°F'} position={'insideTopLeft'} />
+          </YAxis>
+        ) : null}
+        {selectedMetrics.some(metric => pressure.includes(metric)) ? (
+          <YAxis yAxisId={'pressure'} datakey={'pressure'}>
+            <Label value={'psi'} position={'insideTopLeft'} />
+          </YAxis>
+        ) : null}
+        {selectedMetrics.includes('injValveOpen') ? (
+          <YAxis yAxisId={'percentage'} datakey={'percentage'}>
+            <Label value={'%'} position={'insideTopLeft'} />
+          </YAxis>
+        ) : null}
+        {selectedMetrics.map(metric => (
+          <Line
+            key={`lineChart-${metric}`}
+            yAxisId={metricToUnit[metric]}
+            dataKey={metric}
+            dot={false}
+            stroke={metricToColor[metric]}
+          />
+        ))}
+        <Tooltip labelFormatter={(time) => convertTime(time)}/>
+        <Legend />
       </LineChart>
     );
   }else{
