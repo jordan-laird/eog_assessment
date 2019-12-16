@@ -6,7 +6,7 @@ import { SubscriptionClient } from 'subscriptions-transport-ws';
 import { Container, LinearProgress } from '@material-ui/core';
 import MetricSelector from './MetricSelector'
 import MetricChart from './MetricChart'
-import MetricCard from './MetricCard'
+import MetricCards from './MetricCards'
 
 const subscriptionClient = new SubscriptionClient('wss://react.eogresources.com/graphql',{
   reconnect: true
@@ -51,13 +51,10 @@ const Dashboard = () => {
 
   if (fetching) return <LinearProgress />
 
-
   return(
     <Container>
-      {selectedMetrics.map(metric => {
-        return <MetricCard metric={metric} />
-      })}
       <MetricSelector />
+      <MetricCards />
       <MetricChart />
     </Container>
   )

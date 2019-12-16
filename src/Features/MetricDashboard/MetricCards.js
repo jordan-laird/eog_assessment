@@ -2,7 +2,7 @@ import React from 'react';
 import { useSubscription } from 'urql';
 import { useDispatch, useSelector } from 'react-redux';
 import { actions } from './reducer';
-import { Container, LinearProgress } from '@material-ui/core';
+import { Card } from '@material-ui/core';
 
 const metricSubscription = `
 subscription {
@@ -15,8 +15,8 @@ subscription {
 }
 `;
 
-
-const MetricCard = ({props}) => {
+const MetricCards = () => {
+  const measurements = useSelector(state => state.metrics.measurements)
   const selectedMetrics = useSelector(state => state.metrics.selectedMetrics)
   const dispatch = useDispatch();
   const handleSubscription = (existing ={}, newData) => {
@@ -25,17 +25,26 @@ const MetricCard = ({props}) => {
       dispatch(actions.newMeasurementReceived(newMeasurement))
     }
   }
-  const [result] = useSubscription({
+  useSubscription({
     query: metricSubscription
   }, handleSubscription)
 
-  const { data } = result;
+  const metricCard = () => {
+    return selectedMetrics.map(metric => {
+        const newestMeasurement = measurements.length ? measurements[measurements.length - 1][metric] : '';
+        return(<Card>{metric + ":" + newestMeasurement}</Card>)
+    })
+  }
 
-  return(<div>props</div>)
+  return(
+    <div>
+      {metricCard()}
+    </div>
+  )
 }
 
 export default () => {
   return(
-    <MetricCard />
+    <MetricCards />
   )
 }
