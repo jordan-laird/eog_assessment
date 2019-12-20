@@ -50,9 +50,7 @@ const MetricCards = () => {
       return (
         <Grid item xs={2} key={metric}>
           <Card className={classes.card} key={metric}>
-            <Typography className={classes.cardHeader} variant="h5">
-              {metric}
-            </Typography>
+            <Typography variant="h5">{metric}</Typography>
             <Typography variant="h6">{mostRecentMeasurements[metric]}</Typography>
           </Card>
         </Grid>
